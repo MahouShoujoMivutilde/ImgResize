@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <html>
+    <script type="text/javascript" src="https://raw.githubusercontent.com/viliusle/Hermite-resize/master/src/hermite.js"></script>
     <title>Re</title>
     <style>
         body {
@@ -12,8 +13,10 @@
             background-repeat: no-repeat !important;
             height: 100vh;
             width: 100vw;
+            font-family: Consolas;
+            font-size: 2vh;
+            color: #666;
         }
-
         img {
             max-height: 100vh;
             max-width: 100vw;
@@ -23,7 +26,7 @@
         }
         span {
             transform: rotate(90deg);
-            top: 25vh;
+            top: 35vh;
             left: -10vw;
             display: block;
             margin: 0 auto;
@@ -33,6 +36,46 @@
             font-size: 5vh;
             color: rgba(250, 250, 250, 0.8);
             opacity: 0.07;
+        }
+        .tg {
+            top: 1vh;
+            left: calc(1vh + 5px);
+            border-collapse: collapse;
+            border-spacing: 0; 
+            border: none;
+            position: fixed;
+        }
+        .tg td {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            padding: 10px 5px;
+            border-style: solid;
+            border-width: 0px;
+            overflow: hidden;
+            word-break: normal;
+        }
+        .tg th {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            font-weight: normal;
+            padding: 10px 5px;
+            border-style: solid;
+            border-width: 0px;
+            overflow: hidden;
+            word-break: normal;
+        }
+        .tg .tg-oeq0 {
+            font-size:x-large;
+            vertical-align: top
+        }
+        input {
+            text-align: center;
+            font-family: Consolas;
+            font-size: x-large;
+            color: #aaa;
+            background: #444;
+            border: none;
+            width: 100px;
         }
     </style>
     <script>
@@ -52,7 +95,7 @@
                 }
             }
             return str;
-        };
+        }
         // удаление предыдущих изображений
         function RemovePrevious() {
             try {
@@ -87,6 +130,15 @@
             });
         }
 
+        function getMaxSide() {
+            var val = parseInt(document.getElementById("max_side").value);
+            console.log(val);
+            return val;
+        }
+        function actuallyResize() {
+            return 1;
+        }
+
         function ResizeAndRender(url) {
             var img = new Image();
             img.src = url;
@@ -95,22 +147,23 @@
                 var height = img.height;
                 var width = img.width;
                 var k, h, w;
+                var max_side = getMaxSide();
 
                 // с использованием основного свойства дроби подбирается размер меньшей стороны
-                if (width <= 2560 && height <= 2560) {
+                if (width <= max_side && height <= max_side) {
                     w = width;
                     h = height;
                 } else if (width > height) {
-                    w = 2560;
+                    w = max_side;
                     k = width/w;
                     h = Math.round(height/k);
                 } else if (width < height) {
-                    h = 2560;
+                    h = max_side;
                     k = height/h;
                     w = Math.round(width/k);
                 } else {
-                    w = 2560;
-                    h = 2560;
+                    w = max_side;
+                    h = max_side;
                 }
                 
                 var canvas = document.createElement("canvas");
@@ -122,12 +175,10 @@
                 CTX.drawImage(img, 0, 0, w, h); // "рисуем" канвас картинку, но не выводим на страницу
                 var image = convertCanvasToImage(canvas);       
                 document.getElementById("c").appendChild(image); // собственно, изображение, полученное из канвас
-                new_image = document.getElementsByTagName("img")[0]
-                new_image.onload = function() {
-                    var out_width = new_image.width;
-                    var out_height = new_image.height;
-                    console.log("{0}x{1} → {2}x{3}, альфа-канал (если был ^__^) заполнен #fdfeff".formatUnicorn(width, height, out_width, out_height));
-                    notifyMe(height, width, out_height, out_width);
+                //new_image = document.getElementsByTagName("img")[0]
+                image.onload = function() {
+                    console.log("{0}x{1} → {2}x{3}, альфа-канал (если был ^__^) заполнен #fdfeff".formatUnicorn(width, height, w, h));
+                    notifyMe(height, width, h, w);
                 }
             }
         }
@@ -165,5 +216,22 @@
     <body>
         <div id="c"></div>
         <span>ctrl+v & drag and drop</span>
+
+        <table class="tg">
+            <tr>
+                <td class="tg-oeq0">max side:</td>
+                <td class="tg-oeq0"><input type="text" name="name" id="max_side" value="2560" /></td>
+            </tr>
+            <!-- когда-нибудь...
+            <tr>
+                <td class="tg-oeq0">max height:<br></td>
+                <td class="tg-oeq0"><input type="text" name="name" id="max_height" value="" /></td>
+            </tr>
+            <tr>
+                <td class="tg-oeq0">max width:</td>
+                <td class="tg-oeq0"><input type="text" name="name" id="max_width" value="" /></td>
+            </tr> 
+            -->
+        </table>
     </body>
 </html>

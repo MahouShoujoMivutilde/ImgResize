@@ -1,153 +1,169 @@
 <!doctype html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<html>
-	<title>Re</title>
-	<style>
-		body {
-			margin: 0;
-			background: #262626 left fixed !important;
-			background-size: cover !important;
-			background-repeat: no-repeat !important;
-			height: 100vh;
-			width: 100vw;
-		}
+    <meta charset="utf-8">
+    <html>
+    <title>Re</title>
+    <style>
+        body {
+            margin: 0;
+            background: #262626 left fixed !important;
+            background-size: cover !important;
+            background-repeat: no-repeat !important;
+            height: 100vh;
+            width: 100vw;
+        }
 
-		img {
-			max-height: 100vh;
-			max-width: 100vw;
-			display: block;
-			margin: 0 auto;
-			box-shadow: 0 2px 30px 1px black;
-		}
-		span {
-			transform: rotate(90deg);
-			top: 25vh;
-			left: -10vw;
-			display: block;
-			margin: 0 auto;
-			z-index: -1;
-			position: fixed;
-			font-family: Arial;
-			font-size: 5vh;
-			color: rgba(250, 250, 250, 0.8);
-			opacity: 0.07;
-		}
-	</style>
-	<script>
-		// удаление предыдущих изображений
-		function RemovePrevious() {
-			try {
-				document.getElementsByTagName("img")[0].remove();
-			} catch(e) {}
-		}
+        img {
+            max-height: 100vh;
+            max-width: 100vw;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 2px 30px 1px black;
+        }
+        span {
+            transform: rotate(90deg);
+            top: 25vh;
+            left: -10vw;
+            display: block;
+            margin: 0 auto;
+            z-index: -1;
+            position: fixed;
+            font-family: Arial;
+            font-size: 5vh;
+            color: rgba(250, 250, 250, 0.8);
+            opacity: 0.07;
+        }
+    </style>
+    <script>
+        // http://stackoverflow.com/a/18234317
+        String.prototype.formatUnicorn = String.prototype.formatUnicorn ||
+        function () {
+            "use strict";
+            var str = this.toString();
+            if (arguments.length) {
+                var t = typeof arguments[0];
+                var key;
+                var args = ("string" === t || "number" === t) ?
+                    Array.prototype.slice.call(arguments)
+                    : arguments[0];
+                for (key in args) {
+                    str = str.replace(new RegExp("\\{" + key + "\\}", "gi"), args[key]);
+                }
+            }
+            return str;
+        };
+        // удаление предыдущих изображений
+        function RemovePrevious() {
+            try {
+                document.getElementsByTagName("img")[0].remove();
+            } catch(e) {}
+        }
 
-		function convertCanvasToImage(canvas) {
-			var image = new Image();
-			image.src = canvas.toDataURL("image/jpeg"); // base64
-			return image;
-		}
+        function convertCanvasToImage(canvas) {
+            var image = new Image();
+            image.src = canvas.toDataURL("image/jpeg"); // base64
+            return image;
+        }
 
-		// request permission on page load
-		document.addEventListener('DOMContentLoaded', function () {
-			var url = window.location.href;
-			if (Notification.permission !== "granted" && url.search("http") != -1)  {
-				Notification.requestPermission();
-				console.log('страница не локальная \n запрос разрешения на уведомления с характеристиками масштабируемой картинки');
-			}
-		});
+        // request permission on page load
+        document.addEventListener("DOMContentLoaded", function () {
+            var url = window.location.href;
+            if (Notification.permission !== "granted" && url.search("http") != -1)  {
+                Notification.requestPermission();
+                console.log("страница не локальная \n запрос разрешения на уведомления с характеристиками масштабируемой картинки");
+            }
+        });
 
-		function notifyMe(or_h, or_w, h, w) {
-			var title;
-			if (or_h !== h || or_w !== w) {
-				title = 'h' + or_h.toString() + ' w' +  or_w.toString() + ' → ' + 'h' + h.toString() + ' w' + w.toString();
-			} else {
-				title = 'image → jpeg'
-			}
-			var notification = new Notification(title, {
-				icon: 'notification.png'
-			});
-		}
+        function notifyMe(or_w, or_h, w, h) {
+            var title;
+            if (or_h !== h || or_w !== w) {
+                title = "{0}x{1} → {2}x{3}".formatUnicorn(or_w, or_h, w, h)
+            } else {
+                title = "image → jpeg"
+            }
+            var notification = new Notification(title, {
+                icon: "notification.png"
+            });
+        }
 
-		function ResizeAndRender(url) {
-			var img = new Image();
-			img.src = url;
+        function ResizeAndRender(url) {
+            var img = new Image();
+            img.src = url;
 
-			img.onload = function() {
-				var height = img.height;
-				var width = img.width;
-				var k, h, w;
+            img.onload = function() {
+                var height = img.height;
+                var width = img.width;
+                var k, h, w;
 
-				// с использованием основного свойства дроби подбирается размер меньшей стороны
-				if (width <= 2560 && height <= 2560) {
-					w = width;
-					h = height;
-				} else if (width > height) {
-					w = 2560;
-					k = width/w;
-					h = Math.round(height/k);
-				} else if (width < height) {
-					h = 2560;
-					k = height/h;
-					w = Math.round(width/k);
-				} else {
-					w = 2560;
-					h = 2560;
-				}
-				
-				var canvas = document.createElement('canvas');
-				canvas.width = w;
-				canvas.height = h;
-				var CTX = canvas.getContext('2d');
-				CTX.fillStyle = "#fdfeff"; //на случай png с прозрачностью, r253 g254 b255 - для хрома-ки выделения
-				CTX.fillRect(0, 0, w, h);
-				CTX.drawImage(img, 0, 0, w, h); // "рисуем" канвас картинку, но не выводим на страницу
+                // с использованием основного свойства дроби подбирается размер меньшей стороны
+                if (width <= 2560 && height <= 2560) {
+                    w = width;
+                    h = height;
+                } else if (width > height) {
+                    w = 2560;
+                    k = width/w;
+                    h = Math.round(height/k);
+                } else if (width < height) {
+                    h = 2560;
+                    k = height/h;
+                    w = Math.round(width/k);
+                } else {
+                    w = 2560;
+                    h = 2560;
+                }
+                
+                var canvas = document.createElement("canvas");
+                canvas.width = w;
+                canvas.height = h;
+                var CTX = canvas.getContext("2d");
+                CTX.fillStyle = "#fdfeff"; //на случай png с прозрачностью, r253 g254 b255 - для хрома-ки выделения
+                CTX.fillRect(0, 0, w, h);
+                CTX.drawImage(img, 0, 0, w, h); // "рисуем" канвас картинку, но не выводим на страницу
+                var image = convertCanvasToImage(canvas);       
+                document.getElementById("c").appendChild(image); // собственно, изображение, полученное из канвас
+                new_image = document.getElementsByTagName("img")[0]
+                new_image.onload = function() {
+                    var out_width = new_image.width;
+                    var out_height = new_image.height;
+                    console.log("{0}x{1} → {2}x{3}, альфа-канал (если был ^__^) заполнен #fdfeff".formatUnicorn(width, height, out_width, out_height));
+                    notifyMe(height, width, out_height, out_width);
+                }
+            }
+        }
+        
+        // http://stackoverflow.com/a/6338207
+        document.onpaste = function(event){
+            RemovePrevious();
+            var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+            for (index in items) {
+                var item = items[index];
+                if (item.kind === 'file') {
+                    var blob = item.getAsFile();
+                    var reader = new FileReader();
+                    reader.onload = function(event){
+                            ResizeAndRender(event.target.result); // data url
+                        }; 
+                    reader.readAsDataURL(blob);
+                }
+            }
+        }
 
-				var image = convertCanvasToImage(canvas);
-				
-				out_height = image.height;
-				out_width = image.width;
-				
-				document.getElementById("c").appendChild(image); // собственно, изображение, полученное из канвас
+        var readImage = function(imgFile) {
+            RemovePrevious();
+            if(!imgFile.type.match(/image.*/)) {console.log("это не картинка!: ", imgFile.type); return;}
+            var reader = new FileReader();
+            reader.onload = function(e) {ResizeAndRender(e.target.result);}
+            reader.readAsDataURL(imgFile);
+        }
 
-				console.log("исходник: ", height, width, " конвертированная: ", out_height, out_width, " альфа-канал (если был ^__^) заполнен #fdfeff");
-				notifyMe(height, width, out_height, out_width);
-			}
-		}
-		
-		// http://stackoverflow.com/a/6338207
-		document.onpaste = function(event){
-			RemovePrevious();
-			var items = (event.clipboardData || event.originalEvent.clipboardData).items;
-			for (index in items) {
-				var item = items[index];
-				if (item.kind === 'file') {
-					var blob = item.getAsFile();
-					var reader = new FileReader();
-					reader.onload = function(event){
-							ResizeAndRender(event.target.result); // data url
-						}; 
-					reader.readAsDataURL(blob);
-				}
-			}
-		}
-
-		var readImage = function(imgFile) {
-			RemovePrevious();
-			if(!imgFile.type.match(/image.*/)) {console.log("это не картинка!: ", imgFile.type); return;}
-			var reader = new FileReader();
-			reader.onload = function(e) {ResizeAndRender(e.target.result);}
-			reader.readAsDataURL(imgFile);
-		}
-
-		/* Собственно, сам drag and drop */
-		document.addEventListener("dragover", function(e) {e.preventDefault();}, true);
-		document.addEventListener("drop", function(e) {e.preventDefault(); readImage(e.dataTransfer.files[0]);}, true);
-	</script>
+        /* Собственно, сам drag and drop */
+        document.addEventListener("dragover", function(e) {e.preventDefault();}, true);
+        document.addEventListener("drop", function(e) {e.preventDefault(); readImage(e.dataTransfer.files[0]);}, true);
+    </script>
 </head>
-	<body>
-		<div id="c"></div>
-		<span>ctrl+v & drag and drop</span>
-	</body>
+    <body>
+        <div id="c"></div>
+        <span>ctrl+v & drag and drop</span>
+    </body>
 </html>

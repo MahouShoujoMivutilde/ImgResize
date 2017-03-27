@@ -27,7 +27,7 @@ function convert_canvas_to_jpeg(canvas, bg_color = "#fdfeff", image_format) {
     var image = new Image();
     if (image_format === "image/jpeg") {
         if (bg_color == undefined) {
-            console.log("некорректный, или и вовсе отсутствует цвет фона, использован #fdfeff")
+            console.log("%c некорректный, или и вовсе отсутствует цвет фона, использован #fdfeff", "color: #E91E63");
             bg_color = "#fdfeff";
         }
         var w = canvas.width;
@@ -46,13 +46,16 @@ function convert_canvas_to_jpeg(canvas, bg_color = "#fdfeff", image_format) {
     return image;
 }
 
-function notify(original_w, original_h, w, h) {
-    var title;
+function res_log(original_w, original_h, w, h) {
     if (original_h !== h || original_w !== w) {
-        title = "{ow}x{oh} → {w}x{h}".formatUnicorn({ow:original_w, oh:original_h, w:w, h:h})
+        return "{ow}x{oh} → {w}x{h}".formatUnicorn({ow:original_w, oh:original_h, w:w, h:h});
     } else {
-        title = "image → jpeg"
+        return "image → jpeg";
     }
+}
+
+function notify(original_w, original_h, w, h) {
+    var title = res_log(original_w, original_h, w, h);
     var notification = new Notification(title, {
         icon: "notification.png"
     });
@@ -136,14 +139,14 @@ function main(url) {
                 unsharpThreshold: 0,
                 transferable: true
             }, 
-            function (err) {if (err) {console.log(err)}}
+            function (err) {if (err) {"%c" + console.log(err, "color: #E91E63")}}
         );
 
         //resample_hermite(canvas, width, height, w, h)
         var image = convert_canvas_to_jpeg(canvas, get_color(), get_format());
         document.getElementById("c").appendChild(image);
         image.onload = function() {
-            console.log("{0}x{1} → {2}x{3}".formatUnicorn({0:width, 1:height, 2:w, 3:h}));
+            console.log("%c" + res_log(width, height, w, h), "color: #26A69A");
             notify(width, height, w, h);
         }
     }
@@ -151,7 +154,7 @@ function main(url) {
 
 var read_image = function(imgFile) {
     remove_previous_image();
-    if(!imgFile.type.match(/image.*/)) {console.log("это не картинка!: ", imgFile.type); return;}
+    if(!imgFile.type.match(/image.*/)) {console.log("%c это не картинка!: {0}".formatUnicorn({0:imgFile.type}), "color: #E91E63"); return;}
     var reader = new FileReader();
     reader.onload = function(e) {main(e.target.result);}
     reader.readAsDataURL(imgFile);
@@ -179,11 +182,11 @@ document.addEventListener("DOMContentLoaded", function () {
     var url = window.location.href;
     if (Notification.permission !== "granted" && url.search("http") != -1)  {
         Notification.requestPermission();
-        console.log("страница не локальная \n запрос разрешения на уведомления с характеристиками масштабируемой картинки");
+        console.log("%c страница не локальная \n запрос разрешения на уведомления с характеристиками масштабируемой картинки", "color: #009688");
     }
 });
 
-setInterval(function() { get_color()}, 200);
+setInterval(function() {get_color()}, 200);
 console.log("%c Ширина x Высота", "background: #222; color: #bada55"); //http://stackoverflow.com/a/13017382
 
 

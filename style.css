@@ -1,12 +1,8 @@
 body {
     margin: 0;
-    background: #262626 left fixed !important;
-    background-size: cover !important;
-    background-repeat: no-repeat !important;
+    background: #262626;
     height: 100vh;
     width: 100vw;
-    font-family: Consolas;
-    font-size: 2vh;
     color: #666;
 }
 img {
@@ -16,19 +12,22 @@ img {
     margin: 0 auto;
     box-shadow: 0 2px 30px 1px black;
 }
+
+/* ctrl+v & drag and drop */
 span {
     transform: rotate(90deg);
-    top: 38vh;
+    top: 39vh;
     left: -10vw;
     display: block;
     margin: 0 auto;
     z-index: -1;
     position: fixed;
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     font-size: 5vh;
     color: rgba(250, 250, 250, 0.8);
     opacity: 0.07;
 }
+
 .tg {
     top: 1vh;
     left: calc(1vh + 5px);
@@ -37,35 +36,44 @@ span {
     border: none;
     position: fixed;
 }
-.tg td {
+.tg td, .tg th {
     font-family: Arial, sans-serif;
     font-size: 14px;
     padding: 10px 5px;
-    border-style: solid;
-    border-width: 0px;
-    overflow: hidden;
-    word-break: normal;
-}
-.tg th {
-    font-family: Arial, sans-serif;
-    font-size: 14px;
-    font-weight: normal;
-    padding: 10px 5px;
-    border-style: solid;
-    border-width: 0px;
     overflow: hidden;
     word-break: normal;
 }
 .tg .tg-oeq0 {
-    font-size:x-large;
+    font-size: x-large;
     vertical-align: middle;
 }
 input[type=text] {
-    text-align: center;
-    font-family: Consolas;
+    padding: 5px 10px;
+    text-align: left;
+    font-family: Consolas, monospace;
     font-size: x-large;
-    color: #aaa;
+    color: #bbb;
     background: #444;
     border: none;
     width: 100px;
+}
+
+/* радио кнопки */
+input[type="radio"]:checked + label {
+    transition: color 0.2s;
+    color: #bbb;
+}
+input[type="radio"]:not(checked) + label {
+    color: #666;
+}
+input[type="radio"] {
+    opacity: 0;
+    margin: -10px; /* костыль относительно размера + отступа самой кнопки */
+}
+
+/* фикс синего свечения вокруг активного объекта */
+input:focus, select:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    -webkit-box-shadow: none !important;
 }

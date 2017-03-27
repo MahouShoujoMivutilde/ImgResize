@@ -49,7 +49,7 @@ function convert_canvas_to_jpeg(canvas, bg_color = "#fdfeff", image_format) {
 function notify(original_w, original_h, w, h) {
     var title;
     if (original_h !== h || original_w !== w) {
-        title = "{0}x{1} → {2}x{3}".formatUnicorn(original_w, original_h, w, h)
+        title = "{ow}x{oh} → {w}x{h}".formatUnicorn({ow:original_w, oh:original_h, w:w, h:h})
     } else {
         title = "image → jpeg"
     }
@@ -70,6 +70,20 @@ function get_format() {
     }
 }
 
+// http://stackoverflow.com/a/9601429
+function invertColor(hexTripletColor) { // Для читаемости
+    var color = hexTripletColor.toString();
+    color = color.substring(1);           // remove #
+    if (color.length === 3)
+        color = color + color             // #aaa format handling
+    color = parseInt(color, 16);          // convert to integer
+    color = 0xFFFFFF ^ color;             // invert three bytes
+    color = color.toString(16);           // convert to hex
+    color = ("000000" + color).slice(-6); // pad with leading zeros
+    color = "#" + color;                  // prepend #
+    return color;
+}
+
 function get_color() {
     var p = new RegExp(/^#(?:[0-9a-f]{3}){1,2}$/i);
     var input = document.getElementById("bg_color");
@@ -77,7 +91,8 @@ function get_color() {
     if (ret === null) {
         input.style = "background: #521d1d";
     } else {
-        input.style = "background: #444";
+        var inv = invertColor(ret);
+        input.style = "background: {bg} !important; color: {co} !important".formatUnicorn({bg:ret, co:inv});
     }
     return ret;
 }
@@ -128,7 +143,7 @@ function main(url) {
         var image = convert_canvas_to_jpeg(canvas, get_color(), get_format());
         document.getElementById("c").appendChild(image);
         image.onload = function() {
-            console.log("{0}x{1} → {2}x{3}".formatUnicorn(width, height, w, h));
+            console.log("{0}x{1} → {2}x{3}".formatUnicorn({0:width, 1:height, 2:w, 3:h}));
             notify(width, height, w, h);
         }
     }
@@ -168,7 +183,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-setInterval(function(){ get_color()}, 200);
+setInterval(function() { get_color()}, 200);
+console.log("%c Ширина x Высота", "background: #222; color: #bada55"); //http://stackoverflow.com/a/13017382
+
 
 /* Собственно, сам drag and drop */
 document.addEventListener("dragover", function(e) {e.preventDefault();}, true);

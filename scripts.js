@@ -1,7 +1,8 @@
+"use strict";
+
 // http://stackoverflow.com/a/18234317
 String.prototype.formatUnicorn = String.prototype.formatUnicorn ||
 function () {
-    "use strict";
     var str = this.toString();
     if (arguments.length) {
         var t = typeof arguments[0];
@@ -22,16 +23,33 @@ function remove_previous_image() {
     } catch(e) {}
 }
 
-function convert_canvas_to_image(canvas) {
+function convert_canvas_to_jpeg(canvas, bg_color = "#fdfeff", image_format) {
     var image = new Image();
-    image.src = canvas.toDataURL("image/jpeg"); // base64
+    if (image_format === "image/jpeg") {
+        if (bg_color == undefined) {
+            console.log("некорректный, или и вовсе отсутствует цвет фона, использован #fdfeff")
+            bg_color = "#fdfeff";
+        }
+        var w = canvas.width;
+        var h = canvas.height;
+        var tmp_canvas = document.createElement("canvas");
+        tmp_canvas.width = w;
+        tmp_canvas.height = h;
+        var CTX = tmp_canvas.getContext("2d");
+        CTX.fillStyle = bg_color; ///для хрома-ки выделения
+        CTX.fillRect(0, 0, w, h);
+        CTX.drawImage(canvas, 0, 0, w, h);
+        image.src = tmp_canvas.toDataURL(image_format);
+    } else {
+        image.src = canvas.toDataURL(image_format);
+    }
     return image;
 }
 
-function notify(or_w, or_h, w, h) {
+function notify(original_w, original_h, w, h) {
     var title;
-    if (or_h !== h || or_w !== w) {
-        title = "{0}x{1} → {2}x{3}".formatUnicorn(or_w, or_h, w, h)
+    if (original_h !== h || original_w !== w) {
+        title = "{0}x{1} → {2}x{3}".formatUnicorn(original_w, original_h, w, h)
     } else {
         title = "image → jpeg"
     }
@@ -44,68 +62,24 @@ function get_max_side() {
     return parseInt(document.getElementById("max_side").value);
 }
 
-// https://github.com/AleksMeshkov/Hermite-resize
-function resample_hermite(canvas, W, H, W2, H2){
-    var time1 = Date.now();
-    W2 = Math.round(W2);
-    H2 = Math.round(H2);
-    if (W === W2 && H === H2) {
-        return console.log('допустимый размер, только конвертирование в jpg будет применено');
+function get_format() {
+    if (document.getElementById("jpeg").checked) {
+        return "image/jpeg";
+    } else {
+        return "image/png";
     }
-    var img = canvas.getContext("2d").getImageData(0, 0, W, H);
-    var img2 = canvas.getContext("2d").getImageData(0, 0, W2, H2);
-    var data = img.data;
-    var data2 = img2.data;
-    var ratio_w = W / W2;
-    var ratio_h = H / H2;
-    var ratio_w_half = Math.ceil(ratio_w/2);
-    var ratio_h_half = Math.ceil(ratio_h/2);
-    
-    for(var j = 0; j < H2; j++){
-        for(var i = 0; i < W2; i++){
-            var x2 = (i + j*W2) * 4;
-            var weight = 0;
-            var weights = 0;
-            var weights_alpha = 0;
-            var gx_r = gx_g = gx_b = gx_a = 0;
-            var center_y = (j + 0.5) * ratio_h;
-            for(var yy = Math.floor(j * ratio_h); yy < (j + 1) * ratio_h; yy++){
-                var dy = Math.abs(center_y - (yy + 0.5)) / ratio_h_half;
-                var center_x = (i + 0.5) * ratio_w;
-                var w0 = dy*dy //pre-calc part of w
-                for(var xx = Math.floor(i * ratio_w); xx < (i + 1) * ratio_w; xx++){
-                    var dx = Math.abs(center_x - (xx + 0.5)) / ratio_w_half;
-                    var w = Math.sqrt(w0 + dx*dx);
-                    if(w >= -1 && w <= 1){
-                        //hermite filter
-                        weight = 2 * w*w*w - 3*w*w + 1;
-                        if(weight > 0){
-                            dx = 4*(xx + yy*W);
-                            //alpha
-                            gx_a += weight * data[dx + 3];
-                            weights_alpha += weight;
-                            //colors
-                            if(data[dx + 3] < 255)
-                                weight = weight * data[dx + 3] / 250;
-                            gx_r += weight * data[dx];
-                            gx_g += weight * data[dx + 1];
-                            gx_b += weight * data[dx + 2];
-                            weights += weight;
-                            }
-                        }
-                    }       
-                }
-            data2[x2]     = gx_r / weights;
-            data2[x2 + 1] = gx_g / weights;
-            data2[x2 + 2] = gx_b / weights;
-            data2[x2 + 3] = gx_a / weights_alpha;
-            }
-        }
-    console.log("resample_hermite = "+(Math.round(Date.now() - time1)/1000)+" s");
-    canvas.getContext("2d").clearRect(0, 0, Math.max(W, W2), Math.max(H, H2));
-    canvas.width = W2;
-    canvas.height = H2;
-    canvas.getContext("2d").putImageData(img2, 0, 0);
+}
+
+function get_color() {
+    var p = new RegExp(/^#(?:[0-9a-f]{3}){1,2}$/i);
+    var input = document.getElementById("bg_color");
+    var ret = p.exec(input.value);
+    if (ret === null) {
+        input.style = "background: #521d1d";
+    } else {
+        input.style = "background: #444";
+    }
+    return ret;
 }
 
 function main(url) {
@@ -133,18 +107,29 @@ function main(url) {
         }
 
         var canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
+        canvas.width = w;
+        canvas.height = h;
         var CTX = canvas.getContext("2d");
-        CTX.fillStyle = "#fdfeff"; //на случай png с прозрачностью, r253 g254 b255 - для хрома-ки выделения
-        CTX.fillRect(0, 0, width, height);
-        CTX.drawImage(img, 0, 0, width, height); // "рисуем" канвас картинку, но не выводим на страницу */
-        resample_hermite(canvas, width, height, w, h)
-        var image = convert_canvas_to_image(canvas);
+        CTX.drawImage(img, 0, 0, w, h);
+
+        pica.WEBGL = true;
+        pica.resizeCanvas(img, canvas, {
+                quality: 3,
+                alpha: true,
+                unsharpAmount: 0,
+                //unsharpRadius: unsharpRadius,
+                unsharpThreshold: 0,
+                transferable: true
+            }, 
+            function (err) {if (err) {console.log(err)}}
+        );
+
+        //resample_hermite(canvas, width, height, w, h)
+        var image = convert_canvas_to_jpeg(canvas, get_color(), get_format());
         document.getElementById("c").appendChild(image);
         image.onload = function() {
-            console.log("{0}x{1} → {2}x{3}, альфа-канал (если был ^__^) заполнен #fdfeff".formatUnicorn(width, height, w, h));
-            notify(height, width, h, w);
+            console.log("{0}x{1} → {2}x{3}".formatUnicorn(width, height, w, h));
+            notify(width, height, w, h);
         }
     }
 }
@@ -158,17 +143,17 @@ var read_image = function(imgFile) {
 }
 
 // http://stackoverflow.com/a/6338207
-document.onpaste = function(event){
+document.onpaste = function(event) {
     remove_previous_image();
     var items = (event.clipboardData || event.originalEvent.clipboardData).items;
-    for (index in items) {
+    for (var index in items) {
         var item = items[index];
         if (item.kind === 'file') {
             var blob = item.getAsFile();
             var reader = new FileReader();
-            reader.onload = function(event){
-                    main(event.target.result); // data url
-                }; 
+            reader.onload = function(event) {
+                main(event.target.result)
+            }; // data url!
             reader.readAsDataURL(blob);
         }
     }
@@ -182,6 +167,8 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("страница не локальная \n запрос разрешения на уведомления с характеристиками масштабируемой картинки");
     }
 });
+
+setInterval(function(){ get_color()}, 200);
 
 /* Собственно, сам drag and drop */
 document.addEventListener("dragover", function(e) {e.preventDefault();}, true);

@@ -4,6 +4,9 @@
     <meta charset="utf-8">
     <link href="style.css" rel="stylesheet">
     <script async src="scripts.js"></script>
+    <!-- <script async src="pica.min.js"></script> -->
+    <!-- <script async src="hermite.js"></script> -->
+    <script async src="https://cdn.rawgit.com/nodeca/pica/master/dist/pica.min.js"></script>
     <title>Re</title>
 </head>
     <body>
@@ -13,18 +16,25 @@
         <table class="tg">
             <tr>
                 <td class="tg-oeq0">max side:</td>
-                <td class="tg-oeq0"><input type="text" name="name" id="max_side" value="2560" /></td>
-            </tr>
-            <!-- когда-нибудь...
-            <tr>
-                <td class="tg-oeq0">max height:<br></td>
-                <td class="tg-oeq0"><input type="text" name="name" id="max_height" value="" /></td>
+                <td class="tg-oeq0"><input type="text" name="name" id="max_side" value="2560"></td>
             </tr>
             <tr>
-                <td class="tg-oeq0">max width:</td>
-                <td class="tg-oeq0"><input type="text" name="name" id="max_width" value="" /></td>
+                <td class="tg-oeq0">render as:</td>
+                <td class="tg-oeq0">
+                    
+                    <label>
+                        <input name="format" type=radio id="jpeg" checked="checked">JPEG
+                    </label>
+                    <br>
+                    <label>
+                        <input name="format" type=radio id="png">PNG
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td class="tg-oeq0">bg color:</td>
+                <td class="tg-oeq0"><input type="text" name="name" id="bg_color" style="" value="#fdfeff"></td>
             </tr> 
-            -->
         </table>
     </body>
 </html>

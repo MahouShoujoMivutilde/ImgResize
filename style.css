@@ -18,7 +18,7 @@ img {
 }
 span {
     transform: rotate(90deg);
-    top: 35vh;
+    top: 38vh;
     left: -10vw;
     display: block;
     margin: 0 auto;
@@ -58,9 +58,9 @@ span {
 }
 .tg .tg-oeq0 {
     font-size:x-large;
-    vertical-align: top
+    vertical-align: middle;
 }
-input {
+input[type=text] {
     text-align: center;
     font-family: Consolas;
     font-size: x-large;

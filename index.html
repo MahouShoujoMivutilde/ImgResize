@@ -2,11 +2,12 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <link href="style.css" rel="stylesheet">
-    <script async src="scripts.js"></script>
-    <!-- <script async src="pica.min.js"></script> -->
-    <!-- <script async src="hermite.js"></script> -->
+    <link href="style/style.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="style/favicon-min.png"> <!-- Icon made by www.freepik.com, CC BY 3.0 -->
+    <script async src="js/scripts.js"></script>
     <script async src="https://cdn.rawgit.com/nodeca/pica/master/dist/pica.min.js"></script>
+    <!-- <script async src="js/pica.min.js"></script> -->
+    <!-- <script async src="js/hermite.js"></script>  -->
     <title>Re</title>
 </head>
     <body>
@@ -15,12 +16,12 @@
 
         <table class="tg">
             <tr>
-                <td class="tg-oeq0">max side:</td>
-                <td class="tg-oeq0"><input type="text" name="name" id="max_side" value="2560"></td>
+                <td>max side:</td>
+                <td><input type="text" name="name" id="max_side" value="2560"></td>
             </tr>
             <tr>
-                <td class="tg-oeq0">render as:</td>
-                <td class="tg-oeq0">
+                <td>render as:</td>
+                <td>
                     <input name="format" type=radio id="jpeg" checked="checked">
                     <label for="jpeg">JPG</label>
                     <br>
@@ -28,9 +29,9 @@
                     <label for="png">PNG</label>
                 </td>
             </tr>
-            <tr>
-                <td class="tg-oeq0">bg color:</td>
-                <td class="tg-oeq0"><input type="text" name="name" id="bg_color" style="" value="#fdfeff"></td>
+            <tr id="bg_color_row">
+                <td>bg color:</td>
+                <td><input type="text" name="name" id="bg_color" style="" value="#fdfeff"></td>
             </tr> 
         </table>
     </body>

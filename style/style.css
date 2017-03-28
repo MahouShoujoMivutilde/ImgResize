@@ -36,17 +36,24 @@ span {
     border: none;
     position: fixed;
 }
-.tg td, .tg th {
+.tg td {
     font-family: Arial, sans-serif;
     font-size: 14px;
     padding: 10px 5px;
     overflow: hidden;
     word-break: normal;
-}
-.tg .tg-oeq0 {
     font-size: x-large;
     vertical-align: middle;
 }
+
+#bg_color_row {
+    transition: opacity 0.2s;
+}
+
+#bg_color {
+    transition: background-color 0.2s;
+}
+
 input[type=text] {
     padding: 5px 10px;
     text-align: left;

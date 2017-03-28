@@ -57,7 +57,7 @@ function res_log(original_w, original_h, w, h) {
 function notify(original_w, original_h, w, h) {
     var title = res_log(original_w, original_h, w, h);
     var notification = new Notification(title, {
-        icon: "notification.png"
+        icon: "style/notification-min.png" //Icon made by www.flaticon.com/authors/roundicons, CC BY 3.0
     });
 }
 
@@ -98,6 +98,15 @@ function get_color() {
         input.style = "background: {bg} !important; color: {co} !important".formatUnicorn({bg:ret, co:inv});
     }
     return ret;
+}
+
+function hide_color_row() {
+    var el = document.getElementById("bg_color_row");
+    if (get_format() === "image/png") {
+        el.style = "opacity: 0";
+    } else {
+        el.style = "opacity: 1";
+    }
 }
 
 function main(url) {
@@ -142,7 +151,7 @@ function main(url) {
             function (err) {if (err) {"%c" + console.log(err, "color: #E91E63")}}
         );
 
-        //resample_hermite(canvas, width, height, w, h)
+        //resample_hermite(canvas, width, height, w, h) // старый
         var image = convert_canvas_to_jpeg(canvas, get_color(), get_format());
         document.getElementById("c").appendChild(image);
         image.onload = function() {
@@ -186,10 +195,24 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-setInterval(function() {get_color()}, 200);
-console.log("%c Ширина x Высота", "background: #222; color: #bada55"); //http://stackoverflow.com/a/13017382
+//setInterval(function() {get_color(); hide_color_row()}, 200); // старый костыль
 
+get_color(); // сразу поменять первоначальный цвет поля ввода
+
+var events = ["input", "change"];
+var input = document.getElementsByTagName("input");
+
+for (var i = 0; i < input.length; i++) {
+    events.forEach(function(event) {
+        input[i].addEventListener(event, function() {
+            get_color();
+            hide_color_row();
+        });
+    });
+}
 
 /* Собственно, сам drag and drop */
 document.addEventListener("dragover", function(e) {e.preventDefault();}, true);
 document.addEventListener("drop", function(e) {e.preventDefault(); read_image(e.dataTransfer.files[0]);}, true);
+
+console.log("%c Ширина x Высота", "background: #222; color: #bada55"); //http://stackoverflow.com/a/13017382

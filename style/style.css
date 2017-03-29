@@ -44,8 +44,8 @@ span {
     word-break: normal;
     font-size: x-large;
     vertical-align: middle;
+    text-shadow: #262626 1px 1px 0; /* для читабельности даже при цвете картинки, совпадающем с цветом текста */
 }
-
 #bg_color_row {
     transition: opacity 0.2s;
 }

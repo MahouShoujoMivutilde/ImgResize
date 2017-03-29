@@ -163,7 +163,7 @@ function main(url) {
 
 var read_image = function(imgFile) {
     remove_previous_image();
-    if(!imgFile.type.match(/image.*/)) {console.log("%c это не картинка!: {0}".formatUnicorn({0:imgFile.type}), "color: #E91E63"); return;}
+    if(!imgFile || !imgFile.type.match(/image.*/)) {console.log("%c это не картинка!", "color: #E91E63"); return;}
     var reader = new FileReader();
     reader.onload = function(e) {main(e.target.result);}
     reader.readAsDataURL(imgFile);

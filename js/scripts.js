@@ -25,6 +25,7 @@ function remove_previous_image() {
 
 function convert_canvas_to_jpeg(canvas, bg_color = "#fdfeff", image_format) {
     var image = new Image();
+    //image_format = "image/" + image_format;
     if (image_format === "image/jpeg") {
         if (bg_color == undefined) {
             console.log("%c некорректный, или и вовсе отсутствует цвет фона, использован #fdfeff", "color: #E91E63");
@@ -46,16 +47,16 @@ function convert_canvas_to_jpeg(canvas, bg_color = "#fdfeff", image_format) {
     return image;
 }
 
-function res_log(original_w, original_h, w, h) {
+function res_log(original_w, original_h, w, h, format) {
     if (original_h !== h || original_w !== w) {
         return "{ow}x{oh} → {w}x{h}".formatUnicorn({ow:original_w, oh:original_h, w:w, h:h});
     } else {
-        return "image → jpeg";
+        return "image → " + format.split("/")[1];
     }
 }
 
-function notify(original_w, original_h, w, h) {
-    var title = res_log(original_w, original_h, w, h);
+function notify(original_w, original_h, w, h, format) {
+    var title = res_log(original_w, original_h, w, h, format);
     var notification = new Notification(title, {
         icon: "style/notification-min.png" //Icon made by www.flaticon.com/authors/roundicons, CC BY 3.0
     });
@@ -103,19 +104,18 @@ function get_color() {
 function hide_color_row() {
     var el = document.getElementById("bg_color_row");
     if (get_format() === "image/png") {
-        el.style = "opacity: 0";
+        el.style = "opacity: 0.5";
     } else {
         el.style = "opacity: 1";
     }
 }
 
 function main(url) {
-    var img = new Image();
-    img.src = url;
+    GL_IMG.src = url;
 
-    img.onload = function() {
-        var height = img.height;
-        var width = img.width;
+    GL_IMG.onload = function() {
+        var height = GL_IMG.height;
+        var width = GL_IMG.width;
         var h, w;
         var max_side = get_max_side();
 
@@ -137,10 +137,10 @@ function main(url) {
         canvas.width = w;
         canvas.height = h;
         var CTX = canvas.getContext("2d");
-        CTX.drawImage(img, 0, 0, w, h);
+        CTX.drawImage(GL_IMG, 0, 0, w, h);
 
         pica.WEBGL = true;
-        pica.resizeCanvas(img, canvas, {
+        pica.resizeCanvas(GL_IMG, canvas, {
                 quality: 3,
                 alpha: true,
                 unsharpAmount: 0,
@@ -152,11 +152,12 @@ function main(url) {
         );
 
         //resample_hermite(canvas, width, height, w, h) // старый
-        var image = convert_canvas_to_jpeg(canvas, get_color(), get_format());
+        var fmt = get_format();
+        var image = convert_canvas_to_jpeg(canvas, get_color(), fmt);
         document.getElementById("c").appendChild(image);
         image.onload = function() {
-            console.log("%c" + res_log(width, height, w, h), "color: #26A69A");
-            notify(width, height, w, h);
+            console.log("%c" + res_log(width, height, w, h, fmt), "color: #26A69A");
+            notify(width, height, w, h, fmt);
         }
     }
 }
@@ -197,7 +198,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 //setInterval(function() {get_color(); hide_color_row()}, 200); // старый костыль
 
-get_color(); // сразу поменять первоначальный цвет поля ввода
+var GL_IMG = new Image(); // Для хранения изображения при повторном ресайзе
+
+/* динамическое затемнение строки ввода цвета по ненужности 
++  изменение её цвета в соответствии с введенным */
+get_color(); // сразу поменять первоначальный цвет поля ввода при загрузке страницы
 
 var events = ["input", "change"];
 var input = document.getElementsByTagName("input");
@@ -210,6 +215,14 @@ for (var i = 0; i < input.length; i++) {
         });
     });
 }
+
+/* повторный ресайз и т.д. */
+document.getElementById("render").addEventListener("click", function() {
+    remove_previous_image()
+    try {
+        main(GL_IMG.src);
+    } catch(e) {}
+});
 
 /* Собственно, сам drag and drop */
 document.addEventListener("dragover", function(e) {e.preventDefault();}, true);

@@ -17,12 +17,6 @@ function () {
     return str;
 }
 
-function remove_previous_image() {
-    try {
-        document.getElementsByTagName("img")[0].remove();
-    } catch(e) {}
-}
-
 function convert_canvas_to_jpeg(canvas, bg_color = "#fdfeff", image_format) {
     var image = new Image();
     //image_format = "image/" + image_format;
@@ -154,7 +148,7 @@ function main(url) {
         //resample_hermite(canvas, width, height, w, h) // старый
         var fmt = get_format();
         var image = convert_canvas_to_jpeg(canvas, get_color(), fmt);
-        document.getElementById("c").appendChild(image);
+        document.getElementById("holder").src = image.src;
         image.onload = function() {
             console.log("%c" + res_log(width, height, w, h, fmt), "color: #26A69A");
             notify(width, height, w, h, fmt);
@@ -163,7 +157,6 @@ function main(url) {
 }
 
 var read_image = function(imgFile) {
-    remove_previous_image();
     if(!imgFile || !imgFile.type.match(/image.*/)) {console.log("%c это не картинка!", "color: #E91E63"); return;}
     var reader = new FileReader();
     reader.onload = function(e) {main(e.target.result);}
@@ -172,7 +165,7 @@ var read_image = function(imgFile) {
 
 // http://stackoverflow.com/a/6338207
 document.onpaste = function(event) {
-    remove_previous_image();
+    //remove_previous_image();
     var items = (event.clipboardData || event.originalEvent.clipboardData).items;
     for (var index in items) {
         var item = items[index];
@@ -196,8 +189,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-//setInterval(function() {get_color(); hide_color_row()}, 200); // старый костыль
-
 var GL_IMG = new Image(); // Для хранения изображения при повторном ресайзе
 
 /* динамическое затемнение строки ввода цвета по ненужности 
@@ -218,7 +209,6 @@ for (var i = 0; i < input.length; i++) {
 
 /* повторный ресайз и т.д. */
 document.getElementById("render").addEventListener("click", function() {
-    remove_previous_image()
     try {
         main(GL_IMG.src);
     } catch(e) {}

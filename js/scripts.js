@@ -19,7 +19,6 @@ function () {
 
 function convert_canvas_to_jpeg(canvas, bg_color = "#fdfeff", image_format) {
     var image = new Image();
-    //image_format = "image/" + image_format;
     if (image_format === "image/jpeg") {
         if (bg_color == undefined) {
             console.log("%c некорректный, или и вовсе отсутствует цвет фона, использован #fdfeff", "color: #E91E63");
@@ -31,7 +30,7 @@ function convert_canvas_to_jpeg(canvas, bg_color = "#fdfeff", image_format) {
         tmp_canvas.width = w;
         tmp_canvas.height = h;
         var CTX = tmp_canvas.getContext("2d");
-        CTX.fillStyle = bg_color; ///для хрома-ки выделения
+        CTX.fillStyle = bg_color; //для хрома-ки выделения
         CTX.fillRect(0, 0, w, h);
         CTX.drawImage(canvas, 0, 0, w, h);
         image.src = tmp_canvas.toDataURL(image_format);
@@ -165,7 +164,6 @@ var read_image = function(imgFile) {
 
 // http://stackoverflow.com/a/6338207
 document.onpaste = function(event) {
-    //remove_previous_image();
     var items = (event.clipboardData || event.originalEvent.clipboardData).items;
     for (var index in items) {
         var item = items[index];

@@ -133,7 +133,7 @@ function main(url) {
         CTX.drawImage(GL_IMG, 0, 0, w, h);
 
         var start = performance.now();
-        pica.WEBGL = true;
+        //pica.WEBGL = true;
         pica.resizeCanvas(GL_IMG, canvas, {
                 quality: 3,
                 alpha: true,

@@ -104,14 +104,12 @@ input:focus, select:focus, button:focus {
     transition: background-color 0.2s;
 
 }
-
 #render:hover {
     background: #383838;
     cursor: pointer; 
     cursor: hand;
     text-decoration: none;
 }
-
 #render:active {
     background: #333;
 }

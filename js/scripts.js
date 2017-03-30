@@ -40,16 +40,16 @@ function convert_canvas_to_jpeg(canvas, bg_color = "#fdfeff", image_format) {
     return image;
 }
 
-function res_log(original_w, original_h, w, h, format) {
+function res_log(original_w, original_h, w, h, format, time) {
     if (original_h !== h || original_w !== w) {
-        return "{ow}x{oh} → {w}x{h}".formatUnicorn({ow:original_w, oh:original_h, w:w, h:h});
+        return "{ow}x{oh} → {w}x{h} {s}s".formatUnicorn({ow:original_w, oh:original_h, w:w, h:h, s:(time/1000).toFixed(2)});
     } else {
-        return "image → " + format.split("/")[1];
+        return "image → {f} {s}s".formatUnicorn({f:format.split("/")[1], s:(time/1000).toFixed(2)});
     }
 }
 
-function notify(original_w, original_h, w, h, format) {
-    var title = res_log(original_w, original_h, w, h, format);
+function notify(original_w, original_h, w, h, format, time) {
+    var title = res_log(original_w, original_h, w, h, format, time);
     var notification = new Notification(title, {
         icon: "style/notification-min.png" //Icon made by www.flaticon.com/authors/roundicons, CC BY 3.0
     });
@@ -132,6 +132,7 @@ function main(url) {
         var CTX = canvas.getContext("2d");
         CTX.drawImage(GL_IMG, 0, 0, w, h);
 
+        var start = performance.now();
         pica.WEBGL = true;
         pica.resizeCanvas(GL_IMG, canvas, {
                 quality: 3,
@@ -147,10 +148,11 @@ function main(url) {
         //resample_hermite(canvas, width, height, w, h) // старый
         var fmt = get_format();
         var image = convert_canvas_to_jpeg(canvas, get_color(), fmt);
+        var finish = performance.now();
         document.getElementById("holder").src = image.src;
         image.onload = function() {
-            console.log("%c" + res_log(width, height, w, h, fmt), "color: #26A69A");
-            notify(width, height, w, h, fmt);
+            console.log("%c" + res_log(width, height, w, h, fmt, finish - start), "color: #26A69A");
+            notify(width, height, w, h, fmt, finish - start);
         }
     }
 }

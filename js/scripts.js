@@ -40,16 +40,20 @@ function convert_canvas_to_jpeg(canvas, bg_color = "#fdfeff", image_format) {
     return image;
 }
 
-function res_log(original_w, original_h, w, h, format, time) {
-    if (original_h !== h || original_w !== w) {
-        return "{ow}x{oh} → {w}x{h} {s}s".formatUnicorn({ow:original_w, oh:original_h, w:w, h:h, s:(time/1000).toFixed(2)});
+function res_log(d) {
+    if (d.oh !== d.h || d.ow !== d.w) {
+        return "{ow}x{oh} → {w}x{h} {s}s".formatUnicorn({ow:d.ow, oh:d.oh, w:d.w, h:d.h, s:(d.time/1000).toFixed(2)});
     } else {
-        return "image → {f} {s}s".formatUnicorn({f:format.split("/")[1], s:(time/1000).toFixed(2)});
+        return "image → {f} {s}s".formatUnicorn({f:d.format.split("/")[1], s:(d.time/1000).toFixed(2)});
     }
 }
 
-function notify(original_w, original_h, w, h, format, time) {
-    var title = res_log(original_w, original_h, w, h, format, time);
+function notify(dic) {
+    var title;
+    if (Object.keys(dic).length === 1)
+        title = dic.msg;
+    else
+        title = res_log(dic);
     var notification = new Notification(title, {
         icon: "style/notification-min.png" //Icon made by www.flaticon.com/authors/roundicons, CC BY 3.0
     });
@@ -151,14 +155,14 @@ function main(url) {
         var finish = performance.now();
         document.getElementById("holder").src = image.src;
         image.onload = function() {
-            console.log("%c" + res_log(width, height, w, h, fmt, finish - start), "color: #26A69A");
-            notify(width, height, w, h, fmt, finish - start);
+            console.log("%c" + res_log({ow:width, oh:height, w:w, h:h, format:fmt, time:(finish - start)}), "color: #26A69A");
+            notify({ow:width, oh:height, w:w, h:h, format:fmt, time:(finish - start)});
         }
     }
 }
 
 var read_image = function(imgFile) {
-    if(!imgFile || !imgFile.type.match(/image.*/)) {console.log("%c это не картинка!", "color: #E91E63"); return;}
+    if(!imgFile || !imgFile.type.match(/image.*/)) {var msg = "это не картинка!"; notify({msg:msg}); console.log("%c " + msg, "color: #E91E63"); return;}
     var reader = new FileReader();
     reader.onload = function(e) {main(e.target.result);}
     reader.readAsDataURL(imgFile);

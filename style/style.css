@@ -20,7 +20,7 @@ img {
 }
 
 /* ctrl+v & drag and drop */
-span {
+#bg_text {
     text-align: center;
     position: fixed;
     top: 50%; /* аналогично этому: https://webformyself.com/3-stroki-css-dlya-vyravnivaniya-po-vertikali/ */

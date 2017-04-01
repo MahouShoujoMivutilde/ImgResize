@@ -107,8 +107,16 @@ function hide_color_row() {
     }
 }
 
+function change_bg_text(text) {
+    try {
+        document.getElementById("bg_text").textContent = text;
+    } catch(e) {}
+}
+
 function main(url) {
     GL_IMG.src = url;
+
+    change_bg_text("processing...");
 
     GL_IMG.onload = function() {
         var height = GL_IMG.height;
@@ -157,6 +165,7 @@ function main(url) {
         image.onload = function() {
             console.log("%c" + res_log({ow:width, oh:height, w:w, h:h, format:fmt, time:(finish - start)}), "color: #26A69A");
             notify({ow:width, oh:height, w:w, h:h, format:fmt, time:(finish - start)});
+            change_bg_text("ctrl+v & drag and drop");
         }
     }
 }

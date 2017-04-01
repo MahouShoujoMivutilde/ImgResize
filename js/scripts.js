@@ -49,14 +49,16 @@ function res_log(d) {
 }
 
 function notify(dic) {
-    var title;
-    if (Object.keys(dic).length === 1)
-        title = dic.msg;
-    else
-        title = res_log(dic);
-    var notification = new Notification(title, {
-        icon: "style/notification-min.png" //Icon made by www.flaticon.com/authors/roundicons, CC BY 3.0
-    });
+    try {
+        var title;
+        if (Object.keys(dic).length === 1)
+            title = dic.msg;
+        else
+            title = res_log(dic);
+        var notification = new Notification(title, {
+            icon: "style/notification-min.png" //Icon made by www.flaticon.com/authors/roundicons, CC BY 3.0
+        });
+    } catch(e) {}
 }
 
 function get_max_side() {

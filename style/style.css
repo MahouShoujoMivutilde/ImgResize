@@ -6,6 +6,7 @@ body {
     max-height: 100vh;
     max-width: 100vw;
     color: #666;
+    font-family: Arial, sans-serif;
 }
 
 img {
@@ -29,20 +30,18 @@ img {
     transform: translate(-50%, -50%);
     display: block;
     margin: 0 auto;
-    font-family: Arial, sans-serif;
     font-size: 65px;
     color: rgba(250, 250, 250, 0.8);
     opacity: 0.07;
 }
-#bg_text {
+#bg_text:hover, label {
     cursor: pointer; 
-    cursor: hand;
 }
 #get_img {
     display: none;
 }
 
-.tg {
+/*.tg {
     top: 1vh;
     left: calc(1vh + 5px);
     border-collapse: collapse;
@@ -58,15 +57,16 @@ img {
     word-break: normal;
     font-size: x-large;
     vertical-align: middle;
-    text-shadow: #262626 1px 1px 0; /* для читабельности даже при цвете картинки, совпадающем с цветом текста */
+    text-shadow: #262626 1px 1px 0; для читабельности даже при цвете картинки, совпадающем с цветом текста
 }
 td[colspan="2"] {
     text-align: center;
 }
+*/
+
 #bg_color_row {
     transition: opacity 0.2s;
 }
-
 #bg_color {
     transition: background-color 0.2s;
 }
@@ -79,7 +79,7 @@ input[type=text] {
     color: #bbb;
     background: #444;
     border: none;
-    width: 100px;
+    width: 100%;
 }
 
 /* радио кнопки */
@@ -110,14 +110,74 @@ input:focus, select:focus, button:focus {
     padding: 10px 20px 10px 20px;
     text-decoration: none;
     transition: background-color 0.2s;
-
+    text-align: center;
 }
 #render:hover {
     background: #383838;
     cursor: pointer; 
-    cursor: hand;
     text-decoration: none;
 }
 #render:active {
     background: #333;
+}
+
+/* FLEX GRID */
+
+.flex-1 {
+    display: flex;
+}
+
+.flex-1 .col {
+    flex: 1;
+}
+
+.flex-2 {
+    display: flex;
+    justify-content: space-between;
+}
+
+.flex-2 .col {
+    width: 49%;
+}
+
+.col, .flex-1, .flex-2 {
+    box-sizing: border-box;
+}
+
+
+.flex-1, .flex-2 {
+    margin: 0 0 10px 0;
+}
+
+.col {
+/*    background: #444;*/
+    padding: 10px 0;
+    text-shadow: #262626 1px 1px 0; /*для читабельности даже при цвете картинки, совпадающем с цветом текста*/
+}
+
+.holder {
+    top: 15px;
+    left: 15px;
+    margin: 0 15px 15px 0;
+    width: 18%;
+    min-width: 300px;
+    position: fixed;
+    z-index: 100;
+    font-size: x-large;
+    overflow: hidden;
+}
+
+@media (max-width: 720px) {
+    .flex-1,
+    .flex-2 {
+        display: block;
+    }
+    .flex-1 .col,
+    .flex-2 .col {
+        width: 100%;
+        margin: 0 0 10px 0;
+    }
+    .holder {
+        width: 100%;
+    }
 }

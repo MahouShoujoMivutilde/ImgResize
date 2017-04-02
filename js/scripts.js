@@ -224,9 +224,8 @@ for (var i = 0; i < input.length; i++) {
 
 /* повторный ресайз и т.д. */
 document.getElementById("render").addEventListener("click", function() {
-    try {
-        main(GL_IMG.src);
-    } catch(e) {}
+    if (GL_IMG.src)
+       main(GL_IMG.src);
 });
 
 /* Собственно, сам drag and drop */

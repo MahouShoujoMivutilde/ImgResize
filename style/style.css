@@ -6,16 +6,17 @@ body {
     max-height: 100vh;
     max-width: 100vw;
     color: #666;
+    font-family: Arial, sans-serif;
 }
 
 img {
     max-height: 100vh;
-    max-width: 100vw;
+    max-width: 95vw;
     top: 50%;
-    transform: translate(0, -50%);
+    left: 50%;
+    transform: translate(-50%, -50%);
     position: relative;
     display: block;
-    margin: 0 auto;
     box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.5);
     z-index: 2;
 }
@@ -28,45 +29,25 @@ img {
     left: 50%;
     transform: translate(-50%, -50%);
     display: block;
-    margin: 0 auto;
-    font-family: Arial, sans-serif;
     font-size: 65px;
-    color: rgba(250, 250, 250, 0.8);
     opacity: 0.07;
 }
-#bg_text {
+
+label {
+    text-align: center;
+    color: #bbb;
+}
+
+#bg_text:hover, label {
     cursor: pointer; 
-    cursor: hand;
 }
 #get_img {
     display: none;
 }
 
-.tg {
-    top: 1vh;
-    left: calc(1vh + 5px);
-    border-collapse: collapse;
-    border-spacing: 0; 
-    border: none;
-    position: fixed;
-    z-index: 100;
-}
-.tg td {
-    font-family: Arial, sans-serif;
-    padding: 10px 5px;
-    overflow: hidden;
-    word-break: normal;
-    font-size: x-large;
-    vertical-align: middle;
-    text-shadow: #262626 1px 1px 0; /* для читабельности даже при цвете картинки, совпадающем с цветом текста */
-}
-td[colspan="2"] {
-    text-align: center;
-}
 #bg_color_row {
     transition: opacity 0.2s;
 }
-
 #bg_color {
     transition: background-color 0.2s;
 }
@@ -79,19 +60,19 @@ input[type=text] {
     color: #bbb;
     background: #444;
     border: none;
-    width: 100px;
+    width: 100%;
 }
 
 /* радио кнопки */
 input[type="radio"]:checked + label {
     transition: color 0.2s;
-    color: #bbb;
+    background: #444;
 }
 input[type="radio"]:not(checked) + label {
-    color: #666;
+    background: #262626;
 }
 input[type="radio"] {
-    opacity: 0;
+    display: none;
     margin: -10px; /* костыль относительно размера + отступа самой кнопки */
 }
 
@@ -110,14 +91,94 @@ input:focus, select:focus, button:focus {
     padding: 10px 20px 10px 20px;
     text-decoration: none;
     transition: background-color 0.2s;
-
+    text-align: center;
 }
 #render:hover {
     background: #383838;
     cursor: pointer; 
-    cursor: hand;
     text-decoration: none;
 }
 #render:active {
     background: #333;
+}
+
+/* FLEX GRID */
+
+.flex-1 {
+    display: flex;
+}
+
+.flex-1 .col {
+    flex: 1;
+}
+
+.flex-2 {
+    display: flex;
+    justify-content: space-between;
+}
+
+.flex-2 .col {
+    width: 49%;
+}
+
+.col, .flex-1, .flex-2 {
+    box-sizing: border-box;
+}
+
+
+.flex-1, .flex-2 {
+    margin: 0 0 10px 0;
+}
+
+.col {
+    overflow: hidden;
+    padding: 10px 0;
+    text-shadow: #262626 1px 1px 0; /*для читабельности даже при цвете картинки, совпадающем с цветом текста*/
+}
+
+.holder {
+    width: 18%;
+    min-width: 300px;
+    z-index: 100;
+    font-size: x-large;
+    position: fixed;
+    top: 0;
+    padding: 15px;
+    transition: 0.2s;
+}
+
+@media (orientation: portrait) {
+    input[type="text"], #render {
+        font-size: 3rem;
+    }
+    .holder {
+        width: 90%;
+        left: 50%;
+        transform: translate(-50%, 0);
+        position: relative;
+        font-size: 3rem;
+    }
+    img {
+        top: 0;
+        transform: translate(-50%, 0);
+    }
+    body {
+        overflow: hidden;
+    }
+    #bg_text {
+        z-index: 100;
+        border: dashed;
+        opacity: 0.4;
+        text-shadow: #262626 1px 1px 0;
+        position: relative;
+        top: 0;
+        transform: translate(-50%, 0);
+        width: 90%;
+        font-size: 4rem;
+        padding: 10px 0;
+        margin: 0 0 25px 0;
+    }
+    #render {
+        padding: 30px;
+    }
 }

@@ -11,35 +11,33 @@
     <title>Re</title>
 </head>
     <body>
-        <img id="holder" src="">
         <input type="file" accept="image/*" id="get_img">
-        <label for="get_img" id="bg_text">ctrl+v & drag and drop & click/tap</label>
-        <table class="tg">
-            <tr>
-                <td>max side:</td>
-                <td><input type="text" name="name" id="max_side" value="2560"></td>
-            </tr>
-            <tr id="bg_color_row">
-                <td>bg color:</td>
-                <td>
-                    <input type="text" name="name" id="bg_color" style="" value="#fdfeff">
-                </td>
-            </tr>
-            <tr>
-                <td>render as:</td>
-                <td>
+        <div class="holder">
+            <div class="flex-2">
+                <div class="col">max side:</div>
+                <div class="col"><input type="text" name="name" id="max_side" value="2560"></div>
+            </div>
+
+            <div class="flex-2" id="bg_color_row">
+                <div class="col">bg color:</div>
+                <div class="col"><input type="text" name="name" id="bg_color" style="" value="#fdfeff"></div>
+            </div>
+
+            <div class="flex-2">
+                <div class="col">render as:</div>
+                <div class="col flex-2">
                     <input name="format" type=radio id="jpeg" checked="checked">
-                    <label for="jpeg">JPG</label>
-                    <br>
+                    <label class="col" for="jpeg">JPG</label>
+                    
                     <input name="format" type=radio id="png">
-                    <label for="png">PNG</label>
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2">
-                <div id="render">refresh</div>
-                </td>
-            </tr>
-        </table>
+                    <label class="col" for="png">PNG</label>
+                </div>
+            </div>
+            <div class="flex-1">
+                <div class="col" id="render">refresh</div>
+            </div>
+        </div>
+        <label for="get_img" id="bg_text">ctrl+v & drag and drop & click/tap</label>
+        <img id="holder" src="">
     </body>
 </html>

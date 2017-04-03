@@ -148,7 +148,7 @@ input:focus, select:focus, button:focus {
     transition: 0.2s;
 }
 
-@media (orientation: portrait) {
+@media (orientation: portrait), (max-width: 1080px) {
     input[type="text"], #render {
         font-size: 3rem;
     }

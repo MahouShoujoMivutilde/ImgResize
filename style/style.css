@@ -67,7 +67,7 @@ input[type="radio"]:not(checked) + label {
     color: #666;
 }
 input[type="radio"] {
-    opacity: 0;
+    display: none;
     margin: -10px; /* костыль относительно размера + отступа самой кнопки */
 }
 
@@ -143,11 +143,15 @@ input:focus, select:focus, button:focus {
 }
 
 @media (orientation: portrait) {
+    input[type="text"], #render {
+        font-size: 3rem;
+    }
     .holder {
         width: 90%;
         left: 50%;
         transform: translate(-50%, 0);
         position: relative;
+        font-size: 3rem;
     }
     img {
         top: 0;
@@ -165,8 +169,11 @@ input:focus, select:focus, button:focus {
         top: 0;
         transform: translate(-50%, 0);
         width: 90%;
-        font-size: xx-large;
+        font-size: 4rem;
         padding: 10px 0;
         margin: 0 0 25px 0;
+    }
+    #render {
+        padding: 30px;
     }
 }

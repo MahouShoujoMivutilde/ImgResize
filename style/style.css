@@ -140,7 +140,6 @@ input:focus, select:focus, button:focus {
 
 .holder {
     width: 18%;
-    min-width: 300px;
     z-index: 100;
     font-size: x-large;
     position: fixed;
@@ -154,6 +153,7 @@ input:focus, select:focus, button:focus {
         font-size: 3rem;
     }
     .holder {
+        min-width: 500px;
         width: 90%;
         left: 50%;
         transform: translate(-50%, 0);

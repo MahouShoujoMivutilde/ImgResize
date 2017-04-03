@@ -167,7 +167,7 @@ function main(url) {
         image.onload = function() {
             console.log("%c" + res_log({ow:width, oh:height, w:w, h:h, format:fmt, time:(finish - start)}), "color: #26A69A");
             notify({ow:width, oh:height, w:w, h:h, format:fmt, time:(finish - start)});
-            change_bg_text("ctrl+v & drag and drop & click/tap");
+            change_bg_text("open/paste drag&drop");
         }
     }
 }

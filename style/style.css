@@ -30,9 +30,14 @@ img {
     transform: translate(-50%, -50%);
     display: block;
     font-size: 65px;
-    color: rgba(250, 250, 250, 0.8);
     opacity: 0.07;
 }
+
+label {
+    text-align: center;
+    color: #bbb;
+}
+
 #bg_text:hover, label {
     cursor: pointer; 
 }
@@ -61,10 +66,10 @@ input[type=text] {
 /* радио кнопки */
 input[type="radio"]:checked + label {
     transition: color 0.2s;
-    color: #bbb;
+    background: #444;
 }
 input[type="radio"]:not(checked) + label {
-    color: #666;
+    background: #262626;
 }
 input[type="radio"] {
     display: none;

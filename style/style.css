@@ -29,7 +29,6 @@ img {
     left: 50%;
     transform: translate(-50%, -50%);
     display: block;
-    margin: 0 auto;
     font-size: 65px;
     color: rgba(250, 250, 250, 0.8);
     opacity: 0.07;
@@ -40,29 +39,6 @@ img {
 #get_img {
     display: none;
 }
-
-/*.tg {
-    top: 1vh;
-    left: calc(1vh + 5px);
-    border-collapse: collapse;
-    border-spacing: 0; 
-    border: none;
-    position: fixed;
-    z-index: 100;
-}
-.tg td {
-    font-family: Arial, sans-serif;
-    padding: 10px 5px;
-    overflow: hidden;
-    word-break: normal;
-    font-size: x-large;
-    vertical-align: middle;
-    text-shadow: #262626 1px 1px 0; для читабельности даже при цвете картинки, совпадающем с цветом текста
-}
-td[colspan="2"] {
-    text-align: center;
-}
-*/
 
 #bg_color_row {
     transition: opacity 0.2s;
@@ -171,5 +147,26 @@ input:focus, select:focus, button:focus {
         width: 90%;
         left: 50%;
         transform: translate(-50%, 0);
+        position: relative;
+    }
+    img {
+        top: 0;
+        transform: translate(-50%, 0);
+    }
+    body {
+        overflow: hidden;
+    }
+    #bg_text {
+        z-index: 100;
+        border: dashed;
+        opacity: 0.4;
+        text-shadow: #262626 1px 1px 0;
+        position: relative;
+        top: 0;
+        transform: translate(-50%, 0);
+        width: 90%;
+        font-size: xx-large;
+        padding: 10px 0;
+        margin: 0 0 25px 0;
     }
 }

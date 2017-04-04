@@ -147,12 +147,12 @@ function main(url) {
         CTX.drawImage(GL_IMG, 0, 0, w, h);
 
         var start = performance.now();
-        //pica.WEBGL = true;
+        pica.WEBGL = true;
         pica.resizeCanvas(GL_IMG, canvas, {
                 quality: 3,
                 alpha: true,
                 unsharpAmount: 0,
-                //unsharpRadius: unsharpRadius,
+                unsharpRadius: 0,
                 unsharpThreshold: 0,
                 transferable: true
             }, 
@@ -195,16 +195,16 @@ document.onpaste = function(event) {
     }
 }
 
-// request permission on page load
-document.addEventListener("DOMContentLoaded", function () {
-    var url = window.location.href;
-    if (Notification.permission !== "granted" && url.search("http") != -1)  {
-        Notification.requestPermission();
-        console.log("%c страница не локальная \n запрос разрешения на уведомления с характеристиками масштабируемой картинки", "color: #009688");
-    }
-});
-
+pica.debug = console.log.bind(console);
 var GL_IMG = new Image(); // Для хранения изображения при повторном ресайзе
+document.addEventListener("DOMContentLoaded", function() {
+
+// request permission on page load
+var url = window.location.href;
+if (Notification.permission !== "granted" && url.search("http") != -1)  {
+    Notification.requestPermission();
+    console.log("%c страница не локальная \n запрос разрешения на уведомления с характеристиками масштабируемой картинки", "color: #009688");
+}
 
 /* динамическое затемнение строки ввода цвета по ненужности 
 +  изменение её цвета в соответствии с введенным */
@@ -235,3 +235,5 @@ document.addEventListener("drop", function(e) {e.preventDefault(); read_image(e.
 /* Ввод файла по клику на центральную надпись */
 document.getElementById("get_img").addEventListener("change", function(e) {e.preventDefault(); read_image(e.target.files[0]);}, true) 
 console.log("%c Ширина x Высота", "background: #222; color: #bada55"); //http://stackoverflow.com/a/13017382
+
+});

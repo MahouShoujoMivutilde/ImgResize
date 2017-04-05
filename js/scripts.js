@@ -75,7 +75,7 @@ function get_max_side() {
 
 function get_new_resolution(width, height, max) {
   var w, h;
-  if (width <= max && height <= max_side) {
+  if (width <= max && height <= max) {
     w = width;
     h = height;
   } else if (width > height) {

@@ -1,23 +1,22 @@
 "use strict";
 
 // http://stackoverflow.com/a/18234317
-String.prototype.formatUnicorn = String.prototype.formatUnicorn ||
-  function() {
-    var str = this.toString();
-    if (arguments.length) {
-      var t = typeof arguments[0];
-      var key;
-      var args = ("string" === t || "number" === t) ?
-        Array.prototype.slice.call(arguments) :
-        arguments[0];
-      for (key in args) {
-        str = str.replace(new RegExp("\\{" + key + "\\}", "gi"), args[key]);
-      }
+String.prototype.formatUnicorn = String.prototype.formatUnicorn || function() {
+  var str = this.toString();
+  if (arguments.length) {
+    var t = typeof arguments[0];
+    var key;
+    var args = ("string" === t || "number" === t) ?
+      Array.prototype.slice.call(arguments) :
+      arguments[0];
+    for (key in args) {
+      str = str.replace(new RegExp("\\{" + key + "\\}", "gi"), args[key]);
     }
-    return str;
   }
+  return str;
+}
 
-function convert_canvas_to_image(canvas, bg_color = "#fdfeff", image_format) {
+function convert_canvas_to_image(canvas, bg_color, image_format) {
   var image = new Image();
   if (image_format === "image/jpeg") {
     if (bg_color == undefined) {
@@ -40,7 +39,7 @@ function convert_canvas_to_image(canvas, bg_color = "#fdfeff", image_format) {
   return image;
 }
 
-function res_log(d) {
+function resize_log(d) {
   if (d.oh !== d.h || d.ow !== d.w) {
     return "{ow}x{oh} → {w}x{h} {s}s".formatUnicorn({
       ow: d.ow,
@@ -63,7 +62,7 @@ function notify(dic) {
     if (Object.keys(dic).length === 1)
       title = dic.msg;
     else
-      title = res_log(dic);
+      title = resize_log(dic);
     var notification = new Notification(title, {
       icon: "style/notification-min.png" //Icon made by www.flaticon.com/authors/roundicons, CC BY 3.0
     });
@@ -72,6 +71,24 @@ function notify(dic) {
 
 function get_max_side() {
   return parseInt(document.getElementById("max_side").value);
+}
+
+function get_new_resolution(width, height, max) {
+  var w, h;
+  if (width <= max && height <= max_side) {
+    w = width;
+    h = height;
+  } else if (width > height) {
+    w = max;
+    h = Math.round(height/(width/w));
+  } else if (width < height) {
+    h = max;
+    w = Math.round(width/(height/h));
+  } else {
+    w = max;
+    h = max;
+  }
+  return {width:w, height:h};
 }
 
 function get_format() {
@@ -96,7 +113,7 @@ function invertColor(hexTripletColor) { // Для читаемости
   return color;
 }
 
-function get_color() {
+function get_bg_color() {
   var p = new RegExp(/^#(?:[0-9a-f]{3}){1,2}$/i);
   var input = document.getElementById("bg_color");
   var ret = p.exec(input.value);
@@ -104,15 +121,15 @@ function get_color() {
     input.style = "background: #521d1d";
   } else {
     var inv = invertColor(ret);
-    input.style = "background: {bg} !important; color: {co} !important".formatUnicorn({
+    input.style = "background: {bg} !important; color: {text} !important".formatUnicorn({
       bg: ret,
-      co: inv
+      text: inv
     });
   }
   return ret;
 }
 
-function hide_color_row() {
+function change_row_fade() {
   var el = document.getElementById("bg_color_row");
   if (get_format() === "image/png") {
     el.style = "opacity: 0.5";
@@ -128,55 +145,38 @@ function change_bg_text(text) {
 }
 
 function main(url) {
-  GL_IMG.src = url;
+  ORIGINAL_IMAGE.src = url;
 
   change_bg_text("processing...");
 
-  GL_IMG.onload = function() {
-    var height = GL_IMG.height;
-    var width = GL_IMG.width;
-    var h, w;
-    var max_side = get_max_side();
-
-    if (width <= max_side && height <= max_side) {
-      w = width;
-      h = height;
-    } else if (width > height) {
-      w = max_side;
-      h = Math.round(height/(width/w));
-    } else if (width < height) {
-      h = max_side;
-      w = Math.round(width/(height/h));
-    } else {
-      w = max_side;
-      h = max_side;
-    }
-
+  ORIGINAL_IMAGE.onload = function() {
+    var new_res = get_new_resolution(ORIGINAL_IMAGE.width, ORIGINAL_IMAGE.height, get_max_side());
+    
     var dst_canvas = document.createElement("canvas");
-    dst_canvas.width = w;
-    dst_canvas.height = h;
+    dst_canvas.width = new_res.width;
+    dst_canvas.height = new_res.height;
 
     var start = performance.now();
 
-    window.pica.resizeCanvas(GL_IMG, dst_canvas, {
+    window.pica.resizeCanvas(ORIGINAL_IMAGE, dst_canvas, {
       quality: 3,
       alpha: true
     }, function(err) {
       if (err) console.log("%c" + err, "color: #E91E63");
       var fmt = get_format();
-      var image = convert_canvas_to_image(dst_canvas, get_color(), fmt);
+      var image = convert_canvas_to_image(dst_canvas, get_bg_color(), fmt);
       var finish = performance.now();
       document.getElementById("holder").src = image.src;
       image.onload = function() {
         var msg = {
-          ow: width,
-          oh: height,
-          w: w,
-          h: h,
+          ow: ORIGINAL_IMAGE.width,
+          oh: ORIGINAL_IMAGE.height,
+          w: new_res.width,
+          h: new_res.height,
           format: fmt,
           time: (finish - start)
         };
-        console.log("%c" + res_log(msg), "color: #26A69A");
+        console.log("%c" + resize_log(msg), "color: #26A69A");
         notify(msg);
         change_bg_text("paste drag&drop");
       }
@@ -184,7 +184,7 @@ function main(url) {
   }
 }
 
-var read_image = function(imgFile) {
+function read_image(imgFile) {
   if (!imgFile || !imgFile.type.match(/image.*/)) {
     var msg = "это не картинка!";
     notify({
@@ -209,14 +209,14 @@ document.onpaste = function(event) {
       var blob = item.getAsFile();
       var reader = new FileReader();
       reader.onload = function(event) {
-        main(event.target.result)
-      }; // data url!
+        main(event.target.result) // data url!
+      };
       reader.readAsDataURL(blob);
     }
   }
 }
 
-var GL_IMG = new Image(); // Для хранения изображения при повторном ресайзе
+var ORIGINAL_IMAGE = new Image(); // Для хранения изображения при повторном ресайзе
 document.addEventListener("DOMContentLoaded", function() {
 
   // request permission on page load
@@ -228,7 +228,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   /* динамическое затемнение строки ввода цвета по ненужности 
   +  изменение её цвета в соответствии с введенным */
-  get_color(); // сразу поменять первоначальный цвет поля ввода при загрузке страницы
+  get_bg_color(); // сразу поменять первоначальный цвет поля ввода при загрузке страницы
 
   var events = ["input", "change"];
   var input = document.getElementsByTagName("input");
@@ -236,15 +236,15 @@ document.addEventListener("DOMContentLoaded", function() {
   for (var i = 0; i < input.length; i++) {
     events.forEach(function(event) {
       input[i].addEventListener(event, function() {
-        get_color();
-        hide_color_row();
+        get_bg_color();
+        change_row_fade();
       });
     });
   }
 
   // повторный ресайз и т.д.
   document.getElementById("render").addEventListener("click", function() {
-    if (GL_IMG.src) main(GL_IMG.src);
+    if (ORIGINAL_IMAGE.src) main(ORIGINAL_IMAGE.src);
   });
 
   // Собственно, сам drag and drop

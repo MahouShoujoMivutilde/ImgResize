@@ -17,7 +17,7 @@ body {
   position: fixed;
 }
 
-img {
+#holder {
   max-height: 100vh;
   max-width: 95vw;
   box-shadow: 0 0 30px 0 rgba(0, 0, 0, 0.5);

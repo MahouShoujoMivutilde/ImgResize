@@ -46,12 +46,12 @@ function resize_log(d) {
       oh: d.oh,
       w: d.w,
       h: d.h,
-      s: (d.time / 1000).toFixed(2)
+      s: (d.time/1000).toFixed(2)
     });
   } else {
     return "image → {f} {s}s".formatUnicorn({
       f: d.format.split("/")[1],
-      s: (d.time / 1000).toFixed(2)
+      s: (d.time/1000).toFixed(2)
     });
   }
 }

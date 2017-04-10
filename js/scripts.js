@@ -148,6 +148,7 @@ function main(url) {
   ORIGINAL_IMAGE.src = url;
 
   change_bg_text("processing...");
+  console.log("%c processing...", "color: #26A69A");
 
   ORIGINAL_IMAGE.onload = function() {
     var new_res = get_new_resolution(ORIGINAL_IMAGE.width, ORIGINAL_IMAGE.height, get_max_side());
@@ -161,8 +162,8 @@ function main(url) {
     window.pica.resizeCanvas(ORIGINAL_IMAGE, dst_canvas, {
       quality: 3,
       alpha: true
-    }, function(err) {
-      if (err) console.log("%c" + err, "color: #E91E63");
+    }, function finish_main(err) {
+      if (err) console.log("%c " + err, "color: #E91E63");
       var fmt = get_format();
       var image = convert_canvas_to_image(dst_canvas, get_bg_color(), fmt);
       var finish = performance.now();
@@ -176,7 +177,7 @@ function main(url) {
           format: fmt,
           time: (finish - start)
         };
-        console.log("%c" + resize_log(msg), "color: #26A69A");
+        console.log("%c " + resize_log(msg), "color: #26A69A");
         notify(msg);
         change_bg_text("paste drag&drop");
       }
@@ -262,5 +263,9 @@ document.addEventListener("DOMContentLoaded", function() {
     read_image(e.target.files[0]);
   }, true)
   
-  console.log("%c Ширина x Высота", "background: #222; color: #bada55"); //http://stackoverflow.com/a/13017382
+  console.log("%c Ширина x Высота\n WebWorker = {WW}\n WebGL = {WebGL}\n".formatUnicorn({
+      WW:window.pica.WW, 
+      WebGL:window.pica.WEBGL
+    }), 
+  "background: #222; color: #bada55"); //http://stackoverflow.com/a/13017382
 });

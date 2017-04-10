@@ -118,10 +118,10 @@ function get_bg_color() {
   var input = document.getElementById("bg_color");
   var ret = p.exec(input.value);
   if (ret === null) {
-    input.style = "background: #521d1d";
+    input.style.cssText = "background: #521d1d";
   } else {
     var inv = invertColor(ret);
-    input.style = "background: {bg} !important; color: {text} !important".formatUnicorn({
+    input.style.cssText = "background: {bg} !important; color: {text} !important".formatUnicorn({
       bg: ret,
       text: inv
     });
@@ -132,9 +132,9 @@ function get_bg_color() {
 function change_row_fade() {
   var el = document.getElementById("bg_color_row");
   if (get_format() === "image/png") {
-    el.style = "opacity: 0.5";
+    el.style.cssText = "opacity: 0.5";
   } else {
-    el.style = "opacity: 1";
+    el.style.cssText = "opacity: 1";
   }
 }
 

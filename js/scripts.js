@@ -120,10 +120,9 @@ function get_bg_color() {
   if (ret === null) {
     input.style.cssText = "background: #521d1d";
   } else {
-    var inv = invertColor(ret);
     input.style.cssText = "background: {bg} !important; color: {text} !important".formatUnicorn({
       bg: ret,
-      text: inv
+      text: invertColor(ret)
     });
   }
   return ret;

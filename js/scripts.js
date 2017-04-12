@@ -158,22 +158,21 @@ function main(url) {
 
     var start = performance.now();
 
-    window.pica.resizeCanvas(ORIGINAL_IMAGE, dst_canvas, {
+    pica.resize(ORIGINAL_IMAGE, dst_canvas, {
       quality: 3,
       alpha: true
-    }, function finish_main(err) {
-      if (err) console.log("%c " + err, "color: #E91E63");
-      var fmt = get_format();
-      var image = convert_canvas_to_image(dst_canvas, get_bg_color(), fmt);
-      var finish = performance.now();
+    })
+    .then(result => convert_canvas_to_image(dst_canvas, get_bg_color(), get_format()))
+    .then(image => {
       document.getElementById("holder").src = image.src;
+      var finish = performance.now();
       image.onload = function() {
         var msg = {
           ow: ORIGINAL_IMAGE.width,
           oh: ORIGINAL_IMAGE.height,
           w: new_res.width,
           h: new_res.height,
-          format: fmt,
+          format: get_format(),
           time: (finish - start)
         };
         console.log("%c " + resize_log(msg), "color: #26A69A");
@@ -216,6 +215,7 @@ document.onpaste = function(event) {
   }
 }
 
+var pica = window.pica();
 var ORIGINAL_IMAGE = new Image(); // Для хранения изображения при повторном ресайзе
 document.addEventListener("DOMContentLoaded", function() {
 
@@ -262,9 +262,5 @@ document.addEventListener("DOMContentLoaded", function() {
     read_image(e.target.files[0]);
   }, true)
   
-  console.log("%c Ширина x Высота\n WebWorker = {WW}\n WebGL = {WebGL}\n".formatUnicorn({
-      WW:window.pica.WW, 
-      WebGL:window.pica.WEBGL
-    }), 
-  "background: #222; color: #bada55"); //http://stackoverflow.com/a/13017382
+  console.log("%c Ширина x Высота", "background: #222; color: #bada55"); //http://stackoverflow.com/a/13017382 */
 });

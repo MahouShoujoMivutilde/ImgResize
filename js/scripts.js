@@ -92,19 +92,17 @@ function get_new_resolution(width, height, max) {
 }
 
 function get_format() {
-  if (document.getElementById("jpeg").checked) {
+  if (document.getElementById("jpeg").checked)
     return "image/jpeg";
-  } else {
+  else
     return "image/png";
-  }
 }
 
 // http://stackoverflow.com/a/9601429
 function invertColor(hexTripletColor) { // Для читаемости
   var color = hexTripletColor.toString();
   color = color.substring(1); // remove #
-  if (color.length === 3)
-    color = color + color // #aaa format handling
+  if (color.length === 3) color = color + color // #aaa format handling
   color = parseInt(color, 16); // convert to integer
   color = 0xFFFFFF ^ color; // invert three bytes
   color = color.toString(16); // convert to hex
@@ -130,11 +128,10 @@ function get_bg_color() {
 
 function change_row_fade() {
   var el = document.getElementById("bg_color_row");
-  if (get_format() === "image/png") {
+  if (get_format() === "image/png")
     el.style.cssText = "opacity: 0.5";
-  } else {
+  else
     el.style.cssText = "opacity: 1";
-  }
 }
 
 function change_bg_text(text) {
@@ -256,7 +253,7 @@ document.addEventListener("DOMContentLoaded", function() {
     read_image(e.dataTransfer.files[0]);
   }, true);
 
-  // Ввод файла по клику на центральную надпись
+  // Ввод файла по клику
   document.getElementById("get_img").addEventListener("change", function(e) {
     e.preventDefault();
     read_image(e.target.files[0]);

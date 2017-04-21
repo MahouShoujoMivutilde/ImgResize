@@ -1,0 +1,26 @@
+{
+  "name": "imgresize",
+  "homepage": "https://github.com/MahouShoujoMivutilde/ImgResize",
+  "authors": [
+    "MahouShoujoMivutilde <MahouShoujoMivutilde@users.noreply.github.com>"
+  ],
+  "description": "",
+  "main": "index.html",
+  "keywords": [
+    "resize",
+    "pica",
+    "js"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "pica":"^3.0.2"
+  }
+}

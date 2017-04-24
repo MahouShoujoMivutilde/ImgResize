@@ -10,6 +10,9 @@
   "license": "MIT",
   "homepage": "https://github.com/MahouShoujoMivutilde/ImgResize#readme",
   "devDependencies": {
-    "gulp": "^3.9.1"
+    "babili": "0.0.12",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-clean-css": "^3.0.4"
   }
 }

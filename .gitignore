@@ -19,4 +19,5 @@ $RECYCLE.BIN/
 *.lnk
 
 bower_components/
+node_modules/
 *.py

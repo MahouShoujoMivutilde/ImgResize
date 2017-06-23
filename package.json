@@ -11,10 +11,10 @@
   "homepage": "https://github.com/MahouShoujoMivutilde/ImgResize#readme",
   "devDependencies": {
     "babili": "0.0.12",
-    "browser-sync": "^2.18.8",
+    "browser-sync": "^2.18.12",
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
-    "gulp-clean-css": "^3.0.4",
+    "gulp-clean-css": "^3.4.2",
     "gulp-watch": "^4.3.11"
   },
   "bugs": {

@@ -4,11 +4,11 @@
   "description": "resize images via pica.js in browser, wow",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MahouShoujoMivutilde/ImgResize.git"
+    "url": "git+https://github.com/MahouShoujoMivutilde/img-resizer.git"
   },
   "author": "MahouShoujoMivutilde",
   "license": "MIT",
-  "homepage": "https://github.com/MahouShoujoMivutilde/ImgResize#readme",
+  "homepage": "https://github.com/MahouShoujoMivutilde/img-resizer#readme",
   "devDependencies": {
     "babili": "0.0.12",
     "browser-sync": "^2.18.12",
@@ -18,7 +18,7 @@
     "gulp-watch": "^4.3.11"
   },
   "bugs": {
-    "url": "https://github.com/MahouShoujoMivutilde/ImgResize/issues"
+    "url": "https://github.com/MahouShoujoMivutilde/img-resizer/issues"
   },
   "main": "gulpfile.js",
   "directories": {
